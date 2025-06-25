@@ -54,27 +54,24 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const data = {
-        name: form.name.value,
-        gender: form.gender.value,
-        phone: form.phone.value,
-        email: form.email.value
-      };
+      const formData = new FormData(form);
 
-      const response = await fetch('https://script.google.com/macros/s/AKfycby1HBrxmEWH6THw5WbbwWLFlkxbVjrlRamgyToV8Jus4S0zq7fekCVDFvq62da2GA/exec', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycby1HBrxmEWH6THw5WbbwWLFlkxbVjrlRamgyToV8Jus4S0zq7fekCVDFvq62da2GA/exec', {
+          method: 'POST',
+          body: formData
+        });
+
+        const resultText = await response.text();
+
+        if (response.ok && resultText.includes("success")) {
+          alert('Submission successful!');
+          form.reset();
+        } else {
+          alert('Submission failed. Please try again later.');
         }
-      });
-
-      const result = await response.json();
-      if (result.result === "success") {
-        alert('Submission successful!');
-        form.reset();
-      } else {
-        alert('Submission failed. Please try again later.');
+      } catch (error) {
+        alert('Error occurred: ' + error.message);
       }
     });
   </script>
