@@ -22,6 +22,10 @@
       color: white;
       border: none;
       font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -51,27 +55,36 @@
 
   <script>
     const form = document.getElementById('clientForm');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(form);
+      const data = {
+        name: form.name.value,
+        gender: form.gender.value,
+        phone: form.phone.value,
+        email: form.email.value
+      };
 
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycby1HBrxmEWH6THw5WbbwWLFlkxbVjrlRamgyToV8Jus4S0zq7fekCVDFvq62da2GA/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzDrESy2cT4549QIw4h6rvwURZeUO3dHCoBJDxdMZhg9pm7PYBXWji16YTOO4HPOCU/exec', {
           method: 'POST',
-          body: formData
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
 
-        const resultText = await response.text();
+        const result = await response.json();
 
-        if (response.ok && resultText.includes("success")) {
-          alert('Submission successful!');
+        if (result.result === "success") {
+          alert("Submission successful!");
           form.reset();
         } else {
-          alert('Submission failed. Please try again later.');
+          alert("Submission failed: " + result.message);
         }
       } catch (error) {
-        alert('Error occurred: ' + error.message);
+        alert("Error occurred: " + error.message);
       }
     });
   </script>
